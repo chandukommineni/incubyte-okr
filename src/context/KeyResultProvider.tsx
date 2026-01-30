@@ -10,19 +10,18 @@ export const KeyResultsContext = createContext<KeyResultContextDefault>({
   keyResultsList: [],
   handleKeyResultAddition: () => false,
 });
+const validateKeyResult = (keyResult: KeyResult): boolean => {
+  const validKeyResultProgressRegex = /^[0-9]+%$/;
+
+  return !(
+    !keyResult.description ||
+    !keyResult.progress ||
+    !validKeyResultProgressRegex.test(keyResult.progress)
+  );
+};
 
 const KeyResultProvider = ({ children }: { children: ReactElement }) => {
   const [keyResultsList, setKeyResultsList] = useState<KeyResult[]>([]);
-
-  const validateKeyResult = (keyResult: KeyResult): boolean => {
-    const validKeyResultProgressRegex = /^[0-9]+%$/;
-
-    return !(
-      !keyResult.description ||
-      !keyResult.progress ||
-      !validKeyResultProgressRegex.test(keyResult.progress)
-    );
-  };
 
   const handleKeyResultAddition = (keyResult: KeyResult): boolean => {
     if (validateKeyResult(keyResult)) {
