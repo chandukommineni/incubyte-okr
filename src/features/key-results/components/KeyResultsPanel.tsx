@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { KeyResult, KeyResultInput, Objective } from "../../../types/okr";
 import KeyResultForm from "./KeyResultForm";
 import KeyResultRow from "./KeyResultRow";
@@ -19,6 +20,8 @@ const KeyResultsPanel = ({
   onUpdate,
   onDelete,
 }: KeyResultsPanelProps) => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   if (!objective) {
     return (
       <div className="flex h-full items-center justify-center rounded-2xl border border-dashed border-slate-700/60 bg-slate-900/40 p-8 text-center text-sm text-slate-300">
@@ -41,7 +44,32 @@ const KeyResultsPanel = ({
         </div>
       </div>
 
-      <KeyResultForm onSubmit={onCreate} />
+      <div className="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-5">
+        <div className="flex items-center justify-between gap-4">
+          <div className="text-sm font-semibold text-slate-200">
+            Key result actions
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsFormOpen((prev) => !prev)}
+            className="rounded-lg bg-emerald-500 px-3 py-2 text-xs font-semibold text-slate-950 transition hover:bg-emerald-400"
+          >
+            {isFormOpen ? "Close form" : "Add Key Result"}
+          </button>
+        </div>
+
+        {isFormOpen && (
+          <div className="mt-4">
+            <KeyResultForm
+              onSubmit={async (input) => {
+                await onCreate(input);
+                setIsFormOpen(false);
+              }}
+              onCancel={() => setIsFormOpen(false)}
+            />
+          </div>
+        )}
+      </div>
 
       <div className="space-y-3">
         <div className="text-sm font-semibold text-slate-200">

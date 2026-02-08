@@ -9,6 +9,7 @@ import {
   getKeyResults,
   updateKeyResult,
 } from "../api/keyResults";
+
 import ObjectiveForm from "../features/objectives/components/ObjectiveForm";
 import ObjectiveList from "../features/objectives/components/ObjectiveList";
 import KeyResultsPanel from "../features/key-results/components/KeyResultsPanel";
@@ -24,6 +25,10 @@ const ObjectivesPage = () => {
   const [isLoadingKeyResults, setIsLoadingKeyResults] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [error, setError] = useState("");
+  
+  const [objectiveProgress, setObjectiveProgress] = useState<
+    Record<string, { completed: number; total: number }>
+  >({});
 
   const selectedObjective = useMemo(
     () => objectives.find((objective) => objective.id === selectedObjectiveId) ?? null,
@@ -42,10 +47,44 @@ const ObjectivesPage = () => {
         }
         return data[0]?.id ?? null;
       });
+      await loadObjectiveProgress(data);
     } catch {
       setError("Failed to load objectives.");
     } finally {
       setIsLoadingObjectives(false);
+    }
+  };
+
+  const loadObjectiveProgress = async (data: Objective[]) => {
+    if (data.length === 0) {
+      setObjectiveProgress({});
+      return;
+    }
+
+    try {
+      const results = await Promise.all(
+        data.map(async (objective) => {
+          const keyResults = await getKeyResults(objective.id);
+          const completed = keyResults.filter((kr) => kr.isCompleted).length;
+          return {
+            id: objective.id,
+            completed,
+            total: keyResults.length,
+          };
+        }),
+      );
+
+      const nextProgress: Record<string, { completed: number; total: number }> =
+        {};
+      results.forEach((item) => {
+        nextProgress[item.id] = {
+          completed: item.completed,
+          total: item.total,
+        };
+      });
+      setObjectiveProgress(nextProgress);
+    } catch {
+      setObjectiveProgress({});
     }
   };
 
@@ -55,6 +94,13 @@ const ObjectivesPage = () => {
       const data = await getKeyResults(objectiveId);
       setKeyResults(data);
       setError("");
+      setObjectiveProgress((prev) => ({
+        ...prev,
+        [objectiveId]: {
+          completed: data.filter((kr) => kr.isCompleted).length,
+          total: data.length,
+        },
+      }));
     } catch {
       setError("Failed to load key results.");
       setKeyResults([]);
@@ -96,6 +142,7 @@ const ObjectivesPage = () => {
     try {
       await createKeyResult(selectedObjectiveId, input);
       await loadKeyResults(selectedObjectiveId);
+      await loadObjectiveProgress(objectives);
     } catch {
       setError("Failed to create key result.");
     }
@@ -111,6 +158,7 @@ const ObjectivesPage = () => {
     try {
       await updateKeyResult(selectedObjectiveId, keyResultId, input);
       await loadKeyResults(selectedObjectiveId);
+      await loadObjectiveProgress(objectives);
     } catch {
       setError("Failed to update key result.");
     }
@@ -123,6 +171,7 @@ const ObjectivesPage = () => {
     try {
       await deleteKeyResult(selectedObjectiveId, keyResultId);
       await loadKeyResults(selectedObjectiveId);
+      await loadObjectiveProgress(objectives);
     } catch {
       setError("Failed to delete key result.");
     }
@@ -182,6 +231,7 @@ const ObjectivesPage = () => {
                     objectives={objectives}
                     selectedId={selectedObjectiveId}
                     onSelect={setSelectedObjectiveId}
+                    progress={objectiveProgress}
                   />
                 )}
               </div>

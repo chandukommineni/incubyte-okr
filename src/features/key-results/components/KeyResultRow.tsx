@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { KeyResult, KeyResultInput } from "../../../types/okr";
 
 interface KeyResultRowProps {
@@ -16,6 +16,12 @@ const KeyResultRow = ({
   const [description, setDescription] = useState(keyResult.description);
   const [isCompleted, setIsCompleted] = useState(keyResult.isCompleted);
   const [isSaving, setIsSaving] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
+
+  useEffect(() => {
+    setDescription(keyResult.description);
+    setIsCompleted(keyResult.isCompleted);
+  }, [keyResult.description, keyResult.isCompleted]);
 
   const handleSave = async () => {
     if (!description.trim()) {
@@ -29,6 +35,16 @@ const KeyResultRow = ({
     });
     setIsSaving(false);
     setIsEditing(false);
+  };
+
+  const handleToggleCompleted = async (nextValue: boolean) => {
+    setIsToggling(true);
+    setIsCompleted(nextValue);
+    await onUpdate(keyResult.id, {
+      description: keyResult.description,
+      isCompleted: nextValue,
+    });
+    setIsToggling(false);
   };
 
   return (
@@ -77,6 +93,16 @@ const KeyResultRow = ({
             <div className="mt-2 inline-flex items-center rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-200">
               {keyResult.isCompleted ? "Completed" : "In progress"}
             </div>
+            <label className="mt-3 flex items-center gap-2 text-xs text-slate-300">
+              <input
+                type="checkbox"
+                checked={isCompleted}
+                disabled={isToggling}
+                onChange={(event) => handleToggleCompleted(event.target.checked)}
+                className="h-4 w-4 rounded border-slate-600 bg-slate-950/40 text-emerald-400 focus:ring-emerald-400 disabled:cursor-not-allowed"
+              />
+              Mark as completed
+            </label>
           </div>
           <div className="flex flex-col gap-2">
             <button

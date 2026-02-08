@@ -3,11 +3,11 @@ import type { KeyResultInput } from "../../../types/okr";
 
 interface KeyResultFormProps {
   onSubmit: (input: KeyResultInput) => Promise<void>;
+  onCancel?: () => void;
 }
 
-const KeyResultForm = ({ onSubmit }: KeyResultFormProps) => {
+const KeyResultForm = ({ onSubmit, onCancel }: KeyResultFormProps) => {
   const [description, setDescription] = useState("");
-  const [isCompleted, setIsCompleted] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -21,9 +21,8 @@ const KeyResultForm = ({ onSubmit }: KeyResultFormProps) => {
     }
 
     setIsSaving(true);
-    await onSubmit({ description: description.trim(), isCompleted });
+    await onSubmit({ description: description.trim() });
     setDescription("");
-    setIsCompleted(false);
     setIsSaving(false);
   };
 
@@ -42,7 +41,7 @@ const KeyResultForm = ({ onSubmit }: KeyResultFormProps) => {
         </div>
       )}
 
-      <div className="mt-4 space-y-3">
+      <div className="mt-4">
         <input
           type="text"
           placeholder="Describe the measurable outcome"
@@ -50,24 +49,26 @@ const KeyResultForm = ({ onSubmit }: KeyResultFormProps) => {
           onChange={(event) => setDescription(event.target.value)}
           className="w-full rounded-lg border border-slate-600 bg-slate-950/40 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-emerald-400 focus:outline-none"
         />
-        <label className="flex items-center gap-2 text-xs text-slate-300">
-          <input
-            type="checkbox"
-            checked={isCompleted}
-            onChange={(event) => setIsCompleted(event.target.checked)}
-            className="h-4 w-4 rounded border-slate-600 bg-slate-950/40 text-emerald-400 focus:ring-emerald-400"
-          />
-          Mark as completed
-        </label>
       </div>
 
-      <button
-        type="submit"
-        disabled={isSaving}
-        className="mt-4 w-full rounded-lg bg-emerald-500 px-3 py-2 text-xs font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {isSaving ? "Adding..." : "Add Key Result"}
-      </button>
+      <div className="mt-4 flex gap-2">
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 rounded-lg border border-slate-600 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-slate-400"
+          >
+            Cancel
+          </button>
+        )}
+        <button
+          type="submit"
+          disabled={isSaving}
+          className="flex-1 rounded-lg bg-emerald-500 px-3 py-2 text-xs font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isSaving ? "Adding..." : "Add Key Result"}
+        </button>
+      </div>
     </form>
   );
 };

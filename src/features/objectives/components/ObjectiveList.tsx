@@ -4,12 +4,14 @@ interface ObjectiveListProps {
   objectives: Objective[];
   selectedId: string | null;
   onSelect: (objectiveId: string) => void;
+  progress: Record<string, { completed: number; total: number }>;
 }
 
 const ObjectiveList = ({
   objectives,
   selectedId,
   onSelect,
+  progress,
 }: ObjectiveListProps) => {
   return (
     <div className="space-y-3">
@@ -20,6 +22,10 @@ const ObjectiveList = ({
       ) : (
         objectives.map((objective) => {
           const isSelected = objective.id === selectedId;
+          const counts = progress[objective.id];
+          const total = counts?.total ?? 0;
+          const completed = counts?.completed ?? 0;
+          const notCompleted = total - completed;
           return (
             <button
               key={objective.id}
@@ -36,6 +42,22 @@ const ObjectiveList = ({
               </div>
               <div className="mt-2 text-xs text-slate-300">
                 {objective.description || "No description provided."}
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-slate-200">
+                {total === 0 ? (
+                  <span className="rounded-full border border-slate-600/70 bg-slate-900/60 px-3 py-1">
+                    No key results yet
+                  </span>
+                ) : (
+                  <>
+                    <span className="rounded-full border border-emerald-500/50 bg-emerald-500/10 px-3 py-1">
+                      Completed {completed}/{total}
+                    </span>
+                    <span className="rounded-full border border-amber-500/50 bg-amber-500/10 px-3 py-1">
+                      Not completed {notCompleted}/{total}
+                    </span>
+                  </>
+                )}
               </div>
             </button>
           );
