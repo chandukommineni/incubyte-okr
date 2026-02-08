@@ -7,12 +7,14 @@
         {
           "id": "1",
           "description": "Reduce initial page load time by 30%",
-          "progress": "60"
+          "progress": "60",
+          "isCompleted": false
         },
         {
           "id": "2",
           "description": "Improve Lighthouse performance score to 90+",
-          "progress": "40"
+          "progress": "40",
+          "isCompleted": false
         }
       ]
     },
@@ -23,28 +25,14 @@
         {
           "id": "1",
           "description": "Onboard 5,000 new users through improved signup flow",
-          "progress": "45"
+          "progress": "45",
+          "isCompleted": false
         },
         {
           "id": "2",
           "description": "Increase signup conversion rate from 8% to 12%",
-          "progress": "55"
-        }
-      ]
-    },
-    {
-      "id": "3",
-      "objective": "Strengthen code quality and maintainability",
-      "keyResults": [
-        {
-          "id": "1",
-          "description": "Increase unit test coverage to 85%",
-          "progress": "70"
-        },
-        {
-          "id": "2",
-          "description": "Refactor legacy components to remove code duplication",
-          "progress": "50"
+          "progress": "55",
+          "isCompleted": false
         }
       ]
     }
