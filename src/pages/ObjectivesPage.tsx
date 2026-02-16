@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   createObjective,
+  deleteObjective,
+  generateData,
   getObjectives,
 } from "../api/objectives";
 import {
@@ -25,7 +27,9 @@ const ObjectivesPage = () => {
   const [isLoadingKeyResults, setIsLoadingKeyResults] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [error, setError] = useState("");
-  
+  const [query, setQuery] = useState("")
+  const [isGeneratingQuery, setIsGeneratingQuery] = useState(false)
+
   const [objectiveProgress, setObjectiveProgress] = useState<
     Record<string, { completed: number; total: number }>
   >({});
@@ -177,6 +181,55 @@ const ObjectivesPage = () => {
     }
   };
 
+  const handleDeleteObjective = async () => {
+    if (!selectedObjectiveId) {
+      return;
+    }
+
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this objective and all its key results?",
+    );
+
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      await deleteObjective(selectedObjectiveId);
+      setKeyResults([]);
+      await loadObjectives();
+    } catch {
+      setError("Failed to delete objective.");
+    }
+  };
+
+  const handleQuery = async () => {
+
+    if (query) {
+      setIsGeneratingQuery(true)
+      try {
+        const response = await generateData(query)
+        const data=response.data
+        console.log(data)
+        setQuery("")
+        loadObjectives()
+        if(data){
+          setSelectedObjectiveId(data.id)
+        }
+        setIsGeneratingQuery(false)
+        
+
+      } catch (error) {
+        alert(error)
+        setIsGeneratingQuery(false)
+      }
+      return
+
+    }
+    alert("Enter Prompt to Generate")
+
+  }
+
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 px-4 py-10 text-white">
       <div className="mx-auto flex max-w-6xl flex-col gap-6">
@@ -193,9 +246,21 @@ const ObjectivesPage = () => {
                 Select an objective to manage its key results.
               </div>
             </div>
+            <div className="flex gap-3">
+              <input
+                type="text"
+                placeholder="Describe the measurable outcome"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-full rounded-lg border border-slate-600 bg-slate-950/40 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-emerald-400 focus:outline-none"
+              />
+              <button type="button" onClick={handleQuery} className="flex-1 rounded-lg border border-slate-600 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-slate-400 cursor-pointer"
+              >{isGeneratingQuery ? "Loading" : "Generate"}</button>
+            </div>
             <button
               type="button"
               onClick={() => setIsAddOpen(true)}
+              disabled={isGeneratingQuery}
               className="rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400"
             >
               Add Objective
@@ -242,6 +307,7 @@ const ObjectivesPage = () => {
             objective={selectedObjective}
             keyResults={keyResults}
             isLoading={isLoadingKeyResults}
+            onDeleteObjective={handleDeleteObjective}
             onCreate={handleCreateKeyResult}
             onUpdate={handleUpdateKeyResult}
             onDelete={handleDeleteKeyResult}

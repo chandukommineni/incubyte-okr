@@ -7,6 +7,7 @@ interface KeyResultsPanelProps {
   objective: Objective | null;
   keyResults: KeyResult[];
   isLoading: boolean;
+  onDeleteObjective: () => Promise<void>;
   onCreate: (input: KeyResultInput) => Promise<void>;
   onUpdate: (keyResultId: string, input: KeyResultInput) => Promise<void>;
   onDelete: (keyResultId: string) => Promise<void>;
@@ -16,6 +17,7 @@ const KeyResultsPanel = ({
   objective,
   keyResults,
   isLoading,
+  onDeleteObjective,
   onCreate,
   onUpdate,
   onDelete,
@@ -33,11 +35,22 @@ const KeyResultsPanel = ({
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-6">
-        <div className="text-xs uppercase tracking-[0.2em] text-emerald-300">
-          Objective detail
-        </div>
-        <div className="mt-3 text-2xl font-semibold text-white">
-          {objective.title}
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="text-xs uppercase tracking-[0.2em] text-emerald-300">
+              Objective detail
+            </div>
+            <div className="mt-3 text-2xl font-semibold text-white">
+              {objective.title}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onDeleteObjective}
+            className="rounded-lg border border-red-500/60 px-3 py-2 text-xs font-semibold text-red-200 transition hover:border-red-400"
+          >
+            Delete Objective
+          </button>
         </div>
         <div className="mt-2 text-sm text-slate-300">
           {objective.description}
