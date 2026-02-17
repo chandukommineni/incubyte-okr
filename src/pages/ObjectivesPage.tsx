@@ -252,9 +252,9 @@ const ObjectivesPage = () => {
                 placeholder="Describe the measurable outcome"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full rounded-lg border border-slate-600 bg-slate-950/40 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-emerald-400 focus:outline-none"
+                className="w-full rounded-lg border border-emerald-500 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-emerald-400 focus:outline-none"
               />
-              <button type="button" onClick={handleQuery} className="flex-1 rounded-lg border border-slate-600 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-slate-400 cursor-pointer"
+              <button type="button" onClick={handleQuery} className="flex-1 rounded-lg border border-slate-600 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-emerald-500 cursor-pointer"
               >{isGeneratingQuery ? "Loading" : "Generate"}</button>
             </div>
             <button
