@@ -1,5 +1,5 @@
 import api from "./http";
-import type { Objective, ObjectiveInput } from "../types/okr";
+import type { ChatMessage, Objective, ObjectiveInput } from "../types/okr";
 
 export const getObjectives = async () => {
   const res = await api.get<Objective[]>("/objectives");
@@ -32,3 +32,14 @@ export const deleteObjective = async (objectiveId: string) => {
 export const generateData= async(query:string)=>{
  return await api.post<Objective>(`/objectives/generate`,{query})
 }
+
+export const chatWithObjectives = async (
+  query: string,
+  data: ChatMessage[],
+) => {
+  const res = await api.post<string>("/objectives/chat", {
+    query,
+    data,
+  });
+  return res.data;
+};

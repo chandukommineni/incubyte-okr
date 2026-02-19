@@ -20,3 +20,8 @@ export type KeyResultInput = {
   description: string;
   isCompleted?: boolean;
 };
+
+export type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};

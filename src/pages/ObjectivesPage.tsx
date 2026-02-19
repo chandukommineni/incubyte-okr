@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  chatWithObjectives,
   createObjective,
   deleteObjective,
   generateData,
@@ -14,8 +15,14 @@ import {
 
 import ObjectiveForm from "../features/objectives/components/ObjectiveForm";
 import ObjectiveList from "../features/objectives/components/ObjectiveList";
+import MiniChatbot from "../features/chatbot/components/MiniChatbot";
 import KeyResultsPanel from "../features/key-results/components/KeyResultsPanel";
-import type { KeyResult, KeyResultInput, Objective } from "../types/okr";
+import type {
+  ChatMessage,
+  KeyResult,
+  KeyResultInput,
+  Objective,
+} from "../types/okr";
 
 const ObjectivesPage = () => {
   const [objectives, setObjectives] = useState<Objective[]>([]);
@@ -230,6 +237,10 @@ const ObjectivesPage = () => {
 
   }
 
+  const handleChat = async (chatQuery: string, data: ChatMessage[]) => {
+    return await chatWithObjectives(chatQuery, data);
+  };
+
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 px-4 py-10 text-white">
       <div className="mx-auto flex max-w-6xl flex-col gap-6">
@@ -275,6 +286,8 @@ const ObjectivesPage = () => {
 
         <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
           <div className="space-y-4">
+            <MiniChatbot onAsk={handleChat} />
+
             {isAddOpen && (
               <ObjectiveForm
                 onSubmit={handleCreateObjective}
