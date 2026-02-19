@@ -257,22 +257,22 @@ const ObjectivesPage = () => {
                 Select an objective to manage its key results.
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 w-[40%]">
               <input
                 type="text"
-                placeholder="Describe the measurable outcome"
+                placeholder="Describe the OKR "
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="w-full rounded-lg border border-emerald-500 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-emerald-400 focus:outline-none"
               />
               <button type="button" onClick={handleQuery} className="flex-1 rounded-lg border border-slate-600 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-emerald-500 cursor-pointer"
-              >{isGeneratingQuery ? "Loading" : "Generate"}</button>
+              >{isGeneratingQuery ? "Loading" : "Generate OKR"}</button>
             </div>
             <button
               type="button"
               onClick={() => setIsAddOpen(true)}
               disabled={isGeneratingQuery}
-              className="rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400"
+              className="rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400 cursor-pointer"
             >
               Add Objective
             </button>

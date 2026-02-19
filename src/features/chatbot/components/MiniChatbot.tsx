@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { ChatMessage } from "../../../types/okr";
+import { FiSend } from "react-icons/fi";
+import { FaRobot } from "react-icons/fa";
 
 interface MiniChatbotProps {
   onAsk: (query: string, data: ChatMessage[]) => Promise<string>;
@@ -76,13 +78,7 @@ const MiniChatbot = ({ onAsk }: MiniChatbotProps) => {
               >
                 Clear
               </button>
-              {/* <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="rounded-lg border border-slate-600 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-slate-400"
-              >
-                Close
-              </button> */}
+             
             </div>
           </div>
 
@@ -133,7 +129,7 @@ const MiniChatbot = ({ onAsk }: MiniChatbotProps) => {
               disabled={isSending}
               className="rounded-lg bg-emerald-500 px-4 py-2 text-xs font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isSending ? "Asking..." : "Send"}
+              {isSending ? "Asking..." : (<FiSend size={16} /> )}
             </button>
           </div>
         </div>
@@ -144,7 +140,8 @@ const MiniChatbot = ({ onAsk }: MiniChatbotProps) => {
         onClick={() => setIsOpen((prev) => !prev)}
         className="rounded-full bg-emerald-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-xl transition hover:bg-emerald-400"
       >
-        {isOpen ? "Hide Chat" : "Chat"}
+        {isOpen ? "Hide Chat" : <FaRobot size={25} className="text-slate-200" />
+}
       </button>
     </div>
   );
